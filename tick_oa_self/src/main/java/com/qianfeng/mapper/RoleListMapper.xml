@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.qianfeng.dao.IRoleListDao">
+  <resultMap id="roleListMap" type="com.qianfeng.entity.RoleList">
+    <id column="id" jdbcType="INTEGER" property="id" />
+    <result column="title" jdbcType="VARCHAR" property="title" />
+    <result column="parentId" jdbcType="INTEGER" property="parentId" />
+    <result column="aicon" jdbcType="VARCHAR" property="aicon" />
+    <result column="parentTitle" jdbcType="VARCHAR" property="parentTitle" />
+    <result column="aid" jdbcType="INTEGER" property="aid" />
+    <result column="roleId" jdbcType="INTEGER" property="roleId" />
+    <result column="uid" jdbcType="INTEGER" property="uid" />
+    <result column="rid" jdbcType="INTEGER" property="rid" />
+    <result column="userId" jdbcType="INTEGER" property="userId" />
+    <result column="realname" jdbcType="VARCHAR" property="realname" />
+    <result column="no" jdbcType="VARCHAR" property="no" />
+  </resultMap>
+  <sql id="roleListMap">
+    id, title, parentId, aicon, parentTitle, aid, roleId, uid, rid, userId, realname, no
+  </sql>
+  <select id="findRoleByNo" parameterType="String" resultMap="roleListMap">
+   		SELECT * from (SELECT a1.id,a1.title,a1.parentId,a1.aicon, a2.title as parentTitle, ra.aid, r.id as roleId, ur.* ,u.id as userId,u.name as realname,u.no from t_authority a1 
+		LEFT join t_authority a2 
+		on a1.parentId= a2.id 
+		INNER JOIN t_roleauthority ra
+		on a1.id= ra.aid
+		INNER JOIN t_role r
+		on ra.rid = r.id
+		INNER JOIN t_userrole ur
+		on r.id=ur.rid
+		INNER JOIN t_user u
+		on ur.uid = u.id ) c 
+		where c.no = #{no,jdbcType=VARCHAR}
+  </select>
+</mapper>
+ 
